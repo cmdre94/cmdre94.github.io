@@ -5,10 +5,15 @@ html, body {
   margin: 0;
   padding: 0;
 }
-
+h2 {
+  text-align: center;
+  background-color: darkgray;
+  width: 100%;
+}
 body {
   font-family: 'Roboto', sans-serif;
 }
+
 
 .title {
   font-size: 2.5em;
@@ -22,28 +27,56 @@ body {
 .dark_gray {
   background-color: darkgray;
   color: #efefef;
+  display: flex;
 }
-
-.light_blue {
-  background-color: #099DD9;
+#map {
+  width: 100%;
 }
-
-.green {
-  background-color: #0C8542;
+html, body {
+  height: 100%;
+  width: 100%;
 }
-
-.lime {
-  background-color: rgb(179, 210, 52);
+a#menu svg {
+width: 40px;
+fill: #000;
 }
-
-.seafoam {
-  background-color: rgb(77, 190, 161);
+#map {
+  height: 100%;  
 }
-
-.red {
-  background-color: #EC1D3B;
+#drawer {
+  display: inline;
 }
-
-.orange {
-  background-color: #F79420;
+li {
+  margin: 2em;
+}
+#new-search {
+  margin: 2em 0 0 1em;
+  width: 70%;
+}
+nav, main {
+  box-sizing: border-box;
+}
+main {
+  width: 100%;
+  height: 100%;
+}
+/* By default, the drawer is hidden. */
+nav {
+  display: flex-wrap;
+  width: 205pz;
+  z-index: +1;
+  height: 100%;
+  position: absolute;
+  /* This trasform moves the drawer off canvas. */
+  -webkit-transform: translate(-300px, 0);
+  transform: translate(-300px, 0);
+  /* Optionally, we animate the drawer. */
+  transition: transform 0.3s ease;
+}
+nav.open {
+  -webkit-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+ul {
+  width: 100%;
 }
