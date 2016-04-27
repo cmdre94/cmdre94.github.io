@@ -38,6 +38,7 @@ html, body {
 a#menu svg {
 width: 40px;
 fill: #000;
+margin: 20%;
 }
 #map {
   display: block;
@@ -49,7 +50,6 @@ fill: #000;
 li {
   margin: 2em;
   font-size: 20px;
-
 }
 li:hover {
   background-color: #9c9a8b;
@@ -85,4 +85,14 @@ nav.open {
 }
 ul {
   width: 100%;
+}
+
+@media only screen and (max-width:450px) {
+  #map {
+  display: block;
+  height: 600px;
+  }
+  h2 {
+    font-size: 20px;
+  }
 }
