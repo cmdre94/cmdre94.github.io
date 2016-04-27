@@ -14,8 +14,11 @@
         <input id="new-search" placeholder="Search" autofocus>
       </header>
       <ul data-bind="foreach: locationList">
-        <li data-bind="text: name"></li>
+        <li data-bind="text: name, click: setLocation"></li>
       </ul>
+      <div data-bind="with:currentLocation">
+        <h3 data-bind="text: address"></h3>
+      </div>
     </nav>
     <main>
       <div class="dark_gray">
@@ -41,12 +44,11 @@
         drawer.classList.toggle("open");
       });      
     </script>
-    <!--Gets the map  
+    <!--Gets the map
     <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHzeXH9rL3M6P48DIpQvI_acZH0Tr-0do&libraries=visualization&callback=initMap">
     </script> -->
     <script src="library/knockout-3.4.0.js"></script>
-    <script src="library/jquery-1.12.3.min.js"></script>
     <script src="js/script.js"></script>
     <script src="js/map.js"> </script>
 

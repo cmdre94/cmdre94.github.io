@@ -36,7 +36,10 @@ var ViewModel = function() {
 		self.locationList.push( new Location(locationItem) );
 	});
 
-	this.currentLocation = ko.observable( this.locationList()[0].name() );
+	this.currentLocation = ko.observable(  );
+	this.setLocation = function(clickedLocation) {
+		self.currentLocation(clickedLocation);
+	};
 
 };
 
