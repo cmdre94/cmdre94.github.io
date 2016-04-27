@@ -2,7 +2,7 @@
 var initialLocations = [
 	{
 		name : "Ivory Tower",
-		address : "308 S. Akard Dallas, TX"
+		address : "308 S. Akard st, Dallas, TX"
 	},
 	{
 		name : "North Park",
@@ -10,15 +10,15 @@ var initialLocations = [
 	},
 	{
 		name : "Grand Prairie",
-		address : "2305 W I-20, Suite 100, Grand Prairie, TX 75052"
+		address : "2305 W I-20, Suite 100, Grand Prairie, TX"
 	},
 	{
 		name : "Mansfield",
-		address : "1971 U.S. 287 Frontage Rd Ste. 113, Mansfield, TX 76063"
+		address : "1971 U.S. 287 Frontage Rd Ste. 113, Mansfield, TX"
 	},
 	{
 		name : "Galleria",
-		address : "13710 Dallas Pkwy, Dallas, TX 75240"
+		address : "13710 Dallas Pkwy, Dallas, TX"
 	}
 ];	
 

@@ -1,12 +1,14 @@
 <!doctype html>
-<html lang="en">
+<!--<html lang="en">-->
   <head>
     <meta charset="utf-8">
    
     <title></title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="library/jquery.js"></script>
     
-
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
+    <meta name="viewport" content="width=device-width">
   </head>
   <body>
     <nav id="drawer" class="dark_gray">
@@ -20,7 +22,7 @@
         <h3 data-bind="text: address"></h3>
       </div>
     </nav>
-    <main>
+    <div main>
       <div class="dark_gray">
         <h2>AT&T Stores</h2>
         <a id="menu">      
@@ -42,7 +44,9 @@
 
       menu.addEventListener("click", function() {
         drawer.classList.toggle("open");
-      });      
+      }); 
+
+        
     </script>
     <!--Gets the map
     <script async defer
