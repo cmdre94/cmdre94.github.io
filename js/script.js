@@ -32,7 +32,7 @@ var places = [
 	}
 ];	
 
-//will delete this location function if I get thiw to work without it
+//will delete this location function if I get this to work without it
 /*var Location = function(data) {
 	this.address = ko.observable(data.address);
 	this.lat = ko.observable(data.lat);
@@ -66,12 +66,13 @@ var ViewModel = function() {
 		disableDefaultUI: true
 	});
 
-	var lastInfoWindow = null;
+	
 
 //FUNCTIONS: handleThis, pushThis, and markerClick; these functions were
 //created outside the for loop to store the variables Marker and InfoWindow
 //makes it possible to display and click the correct marker.  
 //got this idea from the discussion board and expanded on it
+	var lastInfoWindow = null;
 	this.handleThis = function(marker, infoWindow) {
 		function toggleBounce() {
 
@@ -102,15 +103,11 @@ var ViewModel = function() {
 	//pushes the markers into the locationList ko.observable array
 	var pushThis = function(marker) {
 		locationList.push(marker);
-		this.currentLocation = ko.observable();
 	};
 
-	//animates the marker but does not open the infowindow
-	this.markerClick = function(marker, infoWindow) {
-
-		marker.setAnimation(google.maps.Animation.BOUNCE);
-		setTimeout(function(){marker.setAnimation(null); }, 1900);
-		infoWindow.open(map, this);
+	//animates the correct marker and opens the info window
+	this.markerClick = function(marker) {
+		google.maps.event.trigger(marker, 'click', marker);
 	};
 
 	//iterates through the places array and creates the markers
@@ -122,7 +119,7 @@ var ViewModel = function() {
 			map: map,
 			title: places[i].title
 		});
-		var infoWindow = new google.maps.InfoWindow({
+		self.infoWindow = new google.maps.InfoWindow({
 		    content: places[i].title
 		});
 		
@@ -134,7 +131,7 @@ var ViewModel = function() {
 	
 
 
-	//this.currentLocation = ko.observable();
+	this.currentLocation = ko.observable();
 	this.setLocation = function(clickedLocation) {
 		self.currentLocation(clickedLocation);
 
