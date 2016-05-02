@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="library/jquery.js"></script>
     
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
+
     <meta name="viewport" content="width=device-width" content="height=device-height">
   </head>
   <body>
@@ -16,9 +16,9 @@
         <input id="new-search" placeholder="Search" autofocus>
       </header>
       <ul data-bind="foreach: locationList">
-        <li data-bind="text: name, click: setLocation"></li>
+        <li id="li" data-bind="text: title, click: markerClick"></li>
       </ul>
-      <div data-bind="with:currentLocation">
+      <div data-bind="with: currentLocation">
         <h3 data-bind="text: address"></h3>
       </div>
     </nav>
@@ -45,16 +45,13 @@
       menu.addEventListener("click", function() {
         drawer.classList.toggle("open");
       }); 
-
-        
+    
     </script>
-    <!--Gets the map
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHzeXH9rL3M6P48DIpQvI_acZH0Tr-0do&libraries=visualization&callback=initMap">
-    </script> -->
     <script src="library/knockout-3.4.0.js"></script>
+    <!--<script src="js/map.js"></script>-->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
     <script src="js/script.js"></script>
-    <script src="js/map.js"> </script>
+    
 
   </body>
 </html>
