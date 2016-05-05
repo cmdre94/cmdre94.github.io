@@ -2,8 +2,8 @@
 var places = [
 	{
 		address : "208 S. Akard st, Dallas, TX",
-		lat: "32.7795514",
-		lng: "-96.7995402",
+		lat: "32.7797583",
+		lng: "-96.7990691",
 		title: "Ivory Tower",
 	},
 	{
@@ -14,37 +14,29 @@ var places = [
 	},
 	{
 		address : "2305 W I-20, Suite 100, Grand Prairie, TX",
-		lat: "32.6749862",
-		lng: "-97.0406846",
+		lat: "32.675085",
+		lng: "-97.038484",
 		title: "Grand Prairie"
 	},
 	{
 		address : "1971 U.S. 287 Frontage Rd Ste. 113, Mansfield, TX",
-		lat: "32.5949679",
-		lng: "-97.1490089",
+		lat: "32.595490",
+		lng: "-97.147949",
 		title: "Mansfield"
 	},
 	{
 		address : "13710 Dallas Pkwy, Dallas, TX",
-		lat: "32.9340412",
-		lng: "-96.8228905",
+		lat: "32.933534",
+		lng: "-96.820745",
 		title: "Galleria"
 	}
 ];	
 
-//will delete this location function if I get this to work without it
-/*var Location = function(data) {
+var Location = function(data) {
 	this.address = ko.observable(data.address);
-	this.lat = ko.observable(data.lat);
-	this.lng = ko.observable(data.lng);
-	this.title = ko.observable(data.title);
-}*/
-
-
+};
 //creates global map variable
 var map;
-
-
 
 
 var ViewModel = function() {
@@ -52,11 +44,6 @@ var ViewModel = function() {
 	var self = this;
 	
 	self.locationList = ko.observableArray([]);
-
-	// will delete lines 56 through 58 if I get this to work without them
-	/*places.forEach(function(locationItem){
-		self.locationList.push( new Location(locationItem) );
-	});*/
 
 	//THE MAP
 	//initializes the map
@@ -69,16 +56,15 @@ var ViewModel = function() {
 	
 
 //FUNCTIONS: handleThis, pushThis, and markerClick; these functions were
-//created outside the for loop to store the variables Marker and InfoWindow
+//created outside the for loop to store the variables marker and infoWindow
 //makes it possible to display and click the correct marker.  
-//got this idea from the discussion board and expanded on it
+//got this idea from the Udacity discussion board and expanded on it
 	var lastInfoWindow = null;
 	this.handleThis = function(marker, infoWindow) {
 		function toggleBounce() {
-
 			marker.setAnimation(google.maps.Animation.BOUNCE);
 			setTimeout(function(){marker.setAnimation(null); }, 1900);
-				    
+			setLocation(marker);    
 		};
 
 		return function() {
@@ -98,6 +84,7 @@ var ViewModel = function() {
 	            lastInfoWindow = infoWindow;
 	        }	
 		};
+
 	};
 
 	//pushes the markers into the locationList ko.observable array
@@ -108,6 +95,7 @@ var ViewModel = function() {
 	//animates the correct marker and opens the info window
 	this.markerClick = function(marker) {
 		google.maps.event.trigger(marker, 'click', marker);
+		setLocation(marker);
 	};
 
 	//iterates through the places array and creates the markers
@@ -123,18 +111,16 @@ var ViewModel = function() {
 		    content: places[i].title
 		});
 		
-
 		google.maps.event.addListener(marker, 'click', handleThis(marker, infoWindow));
 		pushThis(marker);
 		
 	};
 	
 
-
+	//displays the address at the bottom of the locations list
 	this.currentLocation = ko.observable();
 	this.setLocation = function(clickedLocation) {
 		self.currentLocation(clickedLocation);
-
 	};
 
 };
