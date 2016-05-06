@@ -1,5 +1,4 @@
 
-@import url(https://fonts.googleapis.com/css?family=Roboto);
 
 html, body {
   margin: 0;
@@ -31,21 +30,28 @@ body {
   display: flex;
 }
 
-html, body {
+body {
   height: 100%;
   width: 100%;
 }
-a#menu svg {
-width: 40px;
+a {
+  width: 0%;
+}
+svg {
+width: 25%;
+max-width: 55px;
+min-width: 55px;
 fill: #000;
-margin: 20%;
+margin: 1%;
 }
 #map {
   display: block;
+  width: 100%;
   height: 850px;
 }
 #drawer {
   display: inline;
+  max-width: 241px;
 }
 li {
   margin: 2em;
@@ -82,17 +88,31 @@ nav {
 nav.open {
   -webkit-transform: translate(0, 0);
   transform: translate(0, 0);
+  width:25%;
 }
 ul {
   width: 100%;
+  padding: 0px;
 }
 
-@media only screen and (max-width:450px) {
-  #map {
-  display: block;
-  height: 600px;
+
+@media all and (max-width: 800px) {
+  #li, h2, h3 {
+    font-size: 135%;
   }
-  h2 {
-    font-size: 20px;
+  #li {
+    text-align: left;
+    display: block;
+  }
+  #drawer {
+    height: 100%;
+    display: inline;
+    width: 33%;
+  }
+  #new-search{
+    font-size: 70%
+  }
+  ul {
+    margin-left:0px;
   }
 }
