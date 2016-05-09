@@ -57,7 +57,7 @@ li {
   margin: 2em;
   font-size: 20px;
 }
-li:active, li:hover {
+h3:active, h3:hover, li:active, li:hover {
   background-color: #9c9a8b;
 }
 #new-search {

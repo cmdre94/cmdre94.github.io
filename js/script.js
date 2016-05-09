@@ -34,6 +34,9 @@ var places = [
 
 var Location = function(data) {
 	this.address = ko.observable(data.address);
+	this.lat = ko.observable(data.lat);
+	this.lng = ko.observable(data.lng);
+	this.title = ko.observable(data.title);
 };
 //creates global map variable
 var map;
@@ -64,15 +67,17 @@ var ViewModel = function() {
 		function toggleBounce() {
 			marker.setAnimation(google.maps.Animation.BOUNCE);
 			setTimeout(function(){marker.setAnimation(null); }, 1900);
-			setLocation(marker);    
+			setLocation(marker);
 		};
 
 		return function() {
 			
 			if (lastInfoWindow === infoWindow) {
-	          toggleBounce(marker);
-	          infoWindow.close(map, this);
-	          lastInfoWindow = null;
+	          	toggleBounce(marker);
+	          	$('#currentLocation').empty();
+	          	infoWindow.close(map, this);
+	          	lastInfoWindow = null;
+	          	
 	        }
 	        else {
 	            	if(lastInfoWindow !== null) {
@@ -94,9 +99,36 @@ var ViewModel = function() {
 
 	//animates the correct marker and opens the info window
 	this.markerClick = function(marker) {
-		google.maps.event.trigger(marker, 'click', marker);
-		setLocation(marker);
+		function toggleLocation() {
+			google.maps.event.trigger(marker, 'click', marker);
+			setLocation(marker);
+		};
+		toggleLocation(marker);
 	};
+
+	//THE FILTER: 
+	self.filter = ko.observable('');
+	self.show = ko.observable(true);
+
+	var stringStartsWith = function (string, startsWith) {          
+	    string = string || "";
+	    if (startsWith.length > string.length)
+	        return false;
+	    return string.substring(0, startsWith.length) === startsWith;
+	};
+
+	this.filteredItems = ko.computed(function() {
+    	var filteredList = self.filter().toLowerCase();
+	    if (!filteredList) {
+	        return this.locationList();
+	    } else {
+	        return ko.utils.arrayFilter(this.locationList(), function(item) {
+	            return stringStartsWith(item.title.toLowerCase(), filteredList);	
+	        });
+    	}
+	}, this);
+
+	
 
 	//iterates through the places array and creates the markers
 	for (var i = 0; i < places.length; i++) {
@@ -110,10 +142,9 @@ var ViewModel = function() {
 		self.infoWindow = new google.maps.InfoWindow({
 		    content: places[i].title
 		});
-		
+
 		google.maps.event.addListener(marker, 'click', handleThis(marker, infoWindow));
 		pushThis(marker);
-		
 	};
 	
 
@@ -122,6 +153,7 @@ var ViewModel = function() {
 	this.setLocation = function(clickedLocation) {
 		self.currentLocation(clickedLocation);
 	};
+
 
 };
 

@@ -13,13 +13,13 @@
   <body>
     <nav id="drawer" class="dark_gray">
       <header id="header">
-        <input id="new-search" placeholder="Search" autofocus>
+        <input id="new-search" placeholder="Search" autofocus data-bind="textInput: filter, valueUpdate: 'keyup'"/>
       </header>
-      <ul data-bind="foreach: locationList">
+      <ul data-bind="foreach: filteredItems">
         <li id="li" data-bind="text: title, click: markerClick"></li>
       </ul>
       <div data-bind="with: currentLocation">
-        <h3 data-bind="text: address"></h3>
+        <h3 id="currentLocation" data-bind="text: address, click: markerClick"></h3>
       </div>
     </nav>
     <div main>
