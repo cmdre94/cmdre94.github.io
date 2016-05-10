@@ -37,6 +37,7 @@ var Location = function(data) {
 	this.lat = ko.observable(data.lat);
 	this.lng = ko.observable(data.lng);
 	this.title = ko.observable(data.title);
+	this.marker = '';
 };
 //creates global map variable
 var map;
@@ -45,7 +46,8 @@ var map;
 var ViewModel = function() {
 
 	var self = this;
-	
+
+	//Array of markers
 	self.locationList = ko.observableArray([]);
 
 	//THE MAP
@@ -58,7 +60,7 @@ var ViewModel = function() {
 
 	
 
-//FUNCTIONS: handleThis, pushThis, and markerClick; these functions were
+//FUNCTIONS: handleThis and markerClick; these functions were
 //created outside the for loop to store the variables marker and infoWindow
 //makes it possible to display and click the correct marker.  
 //got this idea from the Udacity discussion board and expanded on it
@@ -92,11 +94,6 @@ var ViewModel = function() {
 
 	};
 
-	//pushes the markers into the locationList ko.observable array
-	var pushThis = function(marker) {
-		locationList.push(marker);
-	};
-
 	//animates the correct marker and opens the info window
 	this.markerClick = function(marker) {
 		function toggleLocation() {
@@ -106,29 +103,27 @@ var ViewModel = function() {
 		toggleLocation(marker);
 	};
 
-	//THE FILTER: 
-	self.filter = ko.observable('');
-	self.show = ko.observable(true);
-
+	//This is the function that was not in Knockout.js
 	var stringStartsWith = function (string, startsWith) {          
 	    string = string || "";
-	    if (startsWith.length > string.length)
-	        return false;
-	    return string.substring(0, startsWith.length) === startsWith;
-	};
+		if (startsWith.length > string.length)
+		   	return false;
+		    return string.substring(0, startsWith.length) === startsWith;
+		};
 
-	this.filteredItems = ko.computed(function() {
-    	var filteredList = self.filter().toLowerCase();
-	    if (!filteredList) {
-	        return this.locationList();
-	    } else {
-	        return ko.utils.arrayFilter(this.locationList(), function(item) {
-	            return stringStartsWith(item.title.toLowerCase(), filteredList);	
-	        });
-    	}
-	}, this);
+	//THE FILTER: 
+		self.filter = ko.observable('');
 
-	
+		this.filteredItems = ko.computed(function() {
+	    	var filteredList = self.filter().toLowerCase();
+		    if (!filteredList) {
+		        return this.locationList();
+		    } else {
+		        return ko.utils.arrayFilter(this.locationList(), function(item) {
+		            return stringStartsWith(item.title.toLowerCase(), filteredList);	    
+		        });
+	    	}
+		}, this);
 
 	//iterates through the places array and creates the markers
 	for (var i = 0; i < places.length; i++) {
@@ -144,17 +139,14 @@ var ViewModel = function() {
 		});
 
 		google.maps.event.addListener(marker, 'click', handleThis(marker, infoWindow));
-		pushThis(marker);
+		locationList.push(marker);
 	};
-	
 
 	//displays the address at the bottom of the locations list
 	this.currentLocation = ko.observable();
 	this.setLocation = function(clickedLocation) {
 		self.currentLocation(clickedLocation);
 	};
-
-
 };
 
 ko.applyBindings(ViewModel());
