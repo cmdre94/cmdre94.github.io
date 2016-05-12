@@ -34,12 +34,13 @@ var places = [
 ];	
 
 var Location = function(data) {
-	this.address = ko.observable(data.address);
-	this.lat = ko.observable(data.lat);
-	this.lng = ko.observable(data.lng);
-	this.title = ko.observable(data.title);
-	this.marker = ko.observable(0);
+	this.address = data.address;
+	this.lat = data.lat;
+	this.lng = data.lng;
+	this.title = data.title;
+	this.marker = data.marker;
 };
+
 
 //THE MAP
 //Initialize and load the map; apply the Knockout.js bindings to the ViewModel
@@ -61,13 +62,19 @@ var ViewModel = function() {
 	var self = this;
 
 	//Array of markers
+	self.allPlaces = [];
+		places.forEach(function(place) {
+	    self.allPlaces.push(place);
+  	});
+
+	
+
+	//Array of ko.observable markers
 	self.locationList = ko.observableArray([]);
 
-	/*places.forEach(function(markerItem) {
-			self.locationList.push( new Location(markerItem))
-		});
-		console.log(locationList());*/
-		
+	places.forEach(function(place) {
+			self.locationList.push(place);
+		});	
 
 	//FUNCTIONS: handleThis and markerClick; these functions were
 	//created outside the for loop to store the variables marker and infoWindow
@@ -105,69 +112,66 @@ var ViewModel = function() {
 
 	//animates the correct marker and opens the info window
 	this.markerClick = function(marker) {
+		console.log(marker);
 		google.maps.event.trigger(marker, 'click', marker);
-		setLocation(marker);	
 	};
-
-	//This is the function that was not in Knockout.js
-	var stringStartsWith = function (string, startsWith) {          
-	    string = string || "";
-		if (startsWith.length > string.length)
-		   	return false;
-		    return string.substring(0, startsWith.length) === startsWith;
-	};
-
-	//THE LIST FILTER: 
-	self.filter = ko.observable('');
-	this.filteredItems = ko.computed(function() {
-	    var filteredList = self.filter().toLowerCase();
-		if (!filteredList) {
-			return this.locationList();
-			marker.setVisible(true);
-		} 
-			else {
-				return ko.utils.arrayFilter(this.locationList(), function(item) {
-		  			return stringStartsWith(item.title.toLowerCase(), filteredList);	    
-		        });
-	    	}
-		}, this);
-
-		this.filteredMarkers = ko.computed(function() {
-			var markerList = self.filter().toLowerCase();
-			if (!markerList) {
-				return this.locationList();
-					marker.setVisible(true);
-						return true;
-			} else {
-				return ko.utils.arrayFilter(this.marker, function(marker) {
-					return stringStartsWith(point.title.toLowerCase(), markerList);
-					marker.setVisible(false);
-				});
-			}
-		}, this);
-
 	
-	
-	//iterates through the places array and creates the markers
-	for (var i = 0; i < places.length; i++) {
-		var latLng = new google.maps.LatLng(places[i].lat, places[i].lng);
-		var marker = new google.maps.Marker({
-			address: places[i].address,
-			position: latLng,
+	self.allPlaces.forEach(function(place) {
+		latLng = new google.maps.LatLng(place.lat, place.lng);
+		var markerOptions = {
 			map: map,
-			title: places[i].title,
-		});
-		self.infoWindow = new google.maps.InfoWindow({
-		    content: places[i].title
-		});
-		google.maps.event.addListener(marker, 'click', handleThis(marker, infoWindow));
-		locationList.push(marker);
+			position: latLng
+		};
+		var infoWindowOptions = {content: place.title};
+
+		place.marker = new google.maps.Marker(markerOptions);
+		place.infoWindow = new google.maps.InfoWindow(infoWindowOptions);
+		
+		google.maps.event.addListener(place.marker, 'click', handleThis(place.marker, place.infoWindow));	    
+	});
+	
+	//THE LIST FILTER: 
+	// The filter will look at the names of the places the Markers are standing
+  	// for, and look at the user input in the search box. If the user input string
+  	// can be found in the place name, then the place is allowed to remain 
+  	// visible. All other markers are removed.
+  	self.userInput = ko.observable('');
+	self.filterMarkers = function() {
+	    var searchInput = self.userInput().toLowerCase();
+	    
+	    self.locationList.removeAll();
+	    
+	    // This looks at the name of each places and then determines if the user
+	    // input can be found within the place name.
+	    self.allPlaces.forEach(function(place) {
+	      	place.marker.setVisible(false);
+	      
+	      	if (place.title.toLowerCase().indexOf(searchInput) !== -1) {
+	        	self.locationList.push(place);
+	      	}
+	    });
+	    
+	    
+	    self.locationList().forEach(function(place) {
+	      place.marker.setVisible(true);
+	    });
 	};
+  
+	function Place(data) {
+	    this.title = data.title;
+	    this.lat = data.lat;
+	    this.lng = data.lng;
+	    // You will save a reference to the Places' map marker after you build the
+	    // marker:
+	    this.marker = null;
+	}
+
+	
 
 	//displays the address at the bottom of the locations list
 	this.currentLocation = ko.observable();
-	this.setLocation = function(clickedLocation) {
-		self.currentLocation(clickedLocation);
+	this.setLocation = function(place) {
+		self.currentLocation(place);
 	};
 };
 
