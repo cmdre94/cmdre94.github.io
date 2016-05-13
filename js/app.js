@@ -111,18 +111,20 @@ var ViewModel = function() {
 	};
 
 	//animates the correct marker and opens the info window
-	this.markerClick = function(marker) {
-		console.log(marker);
-		google.maps.event.trigger(marker, 'click', marker);
+	this.markerClick = function(location) {
+		google.maps.event.trigger(location.marker, 'click');
 	};
-	
+
+	//creates the marker and infowindow
 	self.allPlaces.forEach(function(place) {
 		latLng = new google.maps.LatLng(place.lat, place.lng);
 		var markerOptions = {
 			map: map,
 			position: latLng
 		};
-		var infoWindowOptions = {content: place.title};
+		var infoWindowOptions = {
+			content: place.title
+		};
 
 		place.marker = new google.maps.Marker(markerOptions);
 		place.infoWindow = new google.maps.InfoWindow(infoWindowOptions);
@@ -135,6 +137,7 @@ var ViewModel = function() {
   	// for, and look at the user input in the search box. If the user input string
   	// can be found in the place name, then the place is allowed to remain 
   	// visible. All other markers are removed.
+  	// Credit to http://codepen.io/prather-mcs/pen/KpjbNN?editors=1010
   	self.userInput = ko.observable('');
 	self.filterMarkers = function() {
 	    var searchInput = self.userInput().toLowerCase();
@@ -143,6 +146,7 @@ var ViewModel = function() {
 	    
 	    // This looks at the name of each places and then determines if the user
 	    // input can be found within the place name.
+	    // Credit to http://codepen.io/prather-mcs/pen/KpjbNN?editors=1010
 	    self.allPlaces.forEach(function(place) {
 	      	place.marker.setVisible(false);
 	      
@@ -161,19 +165,15 @@ var ViewModel = function() {
 	    this.title = data.title;
 	    this.lat = data.lat;
 	    this.lng = data.lng;
-	    // You will save a reference to the Places' map marker after you build the
-	    // marker:
+	    // This saves a reference to the Places' map marker after the marker
+	    // is built
+	    // credit to http://codepen.io/prather-mcs/pen/KpjbNN?editors=1010
 	    this.marker = null;
 	}
 
-	
-
-	//displays the address at the bottom of the locations list
+	//Makes the currentLocation available for the markerClick function
 	this.currentLocation = ko.observable();
 	this.setLocation = function(place) {
 		self.currentLocation(place);
 	};
 };
-
-
-
