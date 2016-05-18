@@ -5,7 +5,6 @@ var places = [
 		lat: "32.7797583",
 		lng: "-96.7990691",
 		title: "Ivory Tower",
-		marker: ""
 	},
 	{
 		address : "8687 N Central Expressway, Suite 2340, NorthPark Center, Dallas, TX",
@@ -49,7 +48,7 @@ var	map;
 	initMap = function() {
 		map = new google.maps.Map(document.querySelector('#map'), {
 			center: {lat: 32.820351, lng: -97.0122201},
-			zoom: 10,
+			zoom: 9,
 			disableDefaultUI: true
 		});
 		ko.applyBindings(ViewModel());
@@ -92,7 +91,6 @@ var ViewModel = function() {
 			
 			if (lastInfoWindow === infoWindow) {
 	          	toggleBounce(marker);
-	          	$('#currentLocation').empty();
 	          	infoWindow.close(map, this);
 	          	lastInfoWindow = null;
 	          	
@@ -107,12 +105,45 @@ var ViewModel = function() {
 	            lastInfoWindow = infoWindow;
 	        }	
 		};
-
 	};
 
-	//animates the correct marker and opens the info window
+	// Wikipedia articles for infowindow
+	this.wiki = function(location){
+		//Adds wikipedia api data to the infoWindow content
+		var $wikiElem = $('#wikipedia-links');
+		// clear out old data before new request
+		$wikiElem.text("");
+		
+		var wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='+location.title + '&format=json&callback=wikiCallback';
+		
+		var wikiRequestTimeout = setTimeout(function(){
+			$wikiElem.text("failed to get wikipedia resources");
+		}, 8000);
+
+		$.ajax(wikiUrl, {
+			dataType: 'jsonp',
+			success: function( response ) {
+			   	var articleList = response[1];
+
+			  	for (var i = 0; i < 3; i++) {
+			        articleStr = articleList[i];
+			       	var url = 'https://en.wikipedia.org/wiki/' + articleStr; 	
+			       	$wikiElem.append('<li><a href =' + url + '>' + articleStr + '</a></li>');
+			   	};
+
+			   	clearTimeout(wikiRequestTimeout);
+			}
+		});
+		
+	};
+
+	//Animates the correct marker and opens the info window
+	//DISPLAYS WIKI LINKS IN THE CORRECT INFOWINDOW
+	//THIS DOESN'T WORK IF YOU CLICK THE MARKER BEFORE CLICKING 
+	//THE LIST ITEM
 	this.markerClick = function(location) {
 		google.maps.event.trigger(location.marker, 'click');
+		wiki(location);
 	};
 
 	//creates the marker and infowindow
@@ -122,14 +153,26 @@ var ViewModel = function() {
 			map: map,
 			position: latLng
 		};
+
+		wiki(place);
+		var contentString = '<h1>'+place.title+'</h1>' + place.address +
+			'<ul id="wikipedia-links"></ul>';
+		
+		//The infoWindow content      
 		var infoWindowOptions = {
-			content: place.title
+			content: contentString,
+			maxWidth: 300
 		};
 
+		//The marker and infoWindow
+		
 		place.marker = new google.maps.Marker(markerOptions);
 		place.infoWindow = new google.maps.InfoWindow(infoWindowOptions);
-		
-		google.maps.event.addListener(place.marker, 'click', handleThis(place.marker, place.infoWindow));	    
+
+		//Listens for a click event and activates marker animation
+		//displays infowindow
+		google.maps.event.addListener(place.marker, 'click',
+			handleThis(place.marker, place.infoWindow));	
 	});
 	
 	//THE LIST FILTER: 
@@ -154,14 +197,14 @@ var ViewModel = function() {
 	        	self.locationList.push(place);
 	      	}
 	    });
-	    
-	    
+
 	    self.locationList().forEach(function(place) {
 	      place.marker.setVisible(true);
 	    });
 	};
   
 	function Place(data) {
+		this.address = data.address;
 	    this.title = data.title;
 	    this.lat = data.lat;
 	    this.lng = data.lng;
