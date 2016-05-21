@@ -5,30 +5,35 @@ var places = [
 		lat: "32.7797583",
 		lng: "-96.7990691",
 		title: "Ivory Tower",
+		name: "Dallas"
 	},
 	{
 		address : "8687 N Central Expressway, Suite 2340, NorthPark Center, Dallas, TX",
 		lat: "32.8669116",
 		lng: "-96.7748551",
-		title: "North Park"
+		title: "North Park",
+		name: "North Park"
 	},
 	{
 		address : "2305 W I-20, Suite 100, Grand Prairie, TX",
 		lat: "32.675085",
 		lng: "-97.038484",
-		title: "Grand Prairie"
+		title: "Grand Prairie",
+		name: "Mobile Phone"
 	},
 	{
 		address : "1971 U.S. 287 Frontage Rd Ste. 113, Mansfield, TX",
 		lat: "32.595490",
 		lng: "-97.147949",
-		title: "Mansfield"
+		title: "Mansfield",
+		name: "Cell phone"
 	},
 	{
 		address : "13710 Dallas Pkwy, Dallas, TX",
 		lat: "32.933534",
 		lng: "-96.820745",
-		title: "Galleria"
+		title: "Galleria",
+		name: "Galleria Mall"
 	}
 ];	
 
@@ -37,6 +42,7 @@ var Location = function(data) {
 	this.lat = data.lat;
 	this.lng = data.lng;
 	this.title = data.title;
+	this.name = data.name;
 	this.marker = data.marker;
 };
 
@@ -107,43 +113,10 @@ var ViewModel = function() {
 		};
 	};
 
-	// Wikipedia articles for infowindow
-	this.wiki = function(location){
-		//Adds wikipedia api data to the infoWindow content
-		var $wikiElem = $('#wikipedia-links');
-		// clear out old data before new request
-		$wikiElem.text("");
-		
-		var wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='+location.title + '&format=json&callback=wikiCallback';
-		
-		var wikiRequestTimeout = setTimeout(function(){
-			$wikiElem.text("failed to get wikipedia resources");
-		}, 8000);
-
-		$.ajax(wikiUrl, {
-			dataType: 'jsonp',
-			success: function( response ) {
-			   	var articleList = response[1];
-
-			  	for (var i = 0; i < 3; i++) {
-			        articleStr = articleList[i];
-			       	var url = 'https://en.wikipedia.org/wiki/' + articleStr; 	
-			       	$wikiElem.append('<li><a href =' + url + '>' + articleStr + '</a></li>');
-			   	};
-
-			   	clearTimeout(wikiRequestTimeout);
-			}
-		});
-		
-	};
-
-	//Animates the correct marker and opens the info window
-	//DISPLAYS WIKI LINKS IN THE CORRECT INFOWINDOW
-	//THIS DOESN'T WORK IF YOU CLICK THE MARKER BEFORE CLICKING 
-	//THE LIST ITEM
+	//Makes it possible to click a list item which activates
+	//the corresponding marker
 	this.markerClick = function(location) {
 		google.maps.event.trigger(location.marker, 'click');
-		wiki(location);
 	};
 
 	//creates the marker and infowindow
@@ -153,26 +126,36 @@ var ViewModel = function() {
 			map: map,
 			position: latLng
 		};
+		//Gets wikipedia articles
+		var wikiElem = [];
+		var wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='+place.name + '&format=json&callback=wikiCallback';
+		$.ajax(wikiUrl, {
+			dataType: 'jsonp',
+			success: function( response ) {
+			   	var articleList = response[1];
+				   	for (var i = 0; i < 4; i++) {
+	                articleStr = articleList[i];
+	                var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+	                wikiElem.push('<li id="wikiLinks"><a href =' + url + '>' + articleStr + '</a></li>');
+	            };
+			   	//clearTimeout(wikiRequestTimeout);*/
+				
+				//The markers and infoWindows are created here
+				place.marker = new google.maps.Marker(markerOptions);
+				place.infoWindow = new google.maps.InfoWindow({
+					content: '<h1>'+place.title+'</h1>'+
+						place.address+ 
+						'<div>'+wikiElem+'</div>',
+					maxWidth: 300
+				});
 
-		wiki(place);
-		var contentString = '<h1>'+place.title+'</h1>' + place.address +
-			'<ul id="wikipedia-links"></ul>';
-		
-		//The infoWindow content      
-		var infoWindowOptions = {
-			content: contentString,
-			maxWidth: 300
-		};
+				//Listens for a click event and activates marker animation
+				//displays infowindow
+				google.maps.event.addListener(place.marker, 'click',
+					handleThis(place.marker, place.infoWindow));
+			}
+		});
 
-		//The marker and infoWindow
-		
-		place.marker = new google.maps.Marker(markerOptions);
-		place.infoWindow = new google.maps.InfoWindow(infoWindowOptions);
-
-		//Listens for a click event and activates marker animation
-		//displays infowindow
-		google.maps.event.addListener(place.marker, 'click',
-			handleThis(place.marker, place.infoWindow));	
 	});
 	
 	//THE LIST FILTER: 
@@ -208,6 +191,7 @@ var ViewModel = function() {
 	    this.title = data.title;
 	    this.lat = data.lat;
 	    this.lng = data.lng;
+	    this.name = data.name;
 	    // This saves a reference to the Places' map marker after the marker
 	    // is built
 	    // credit to http://codepen.io/prather-mcs/pen/KpjbNN?editors=1010

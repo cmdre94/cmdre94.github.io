@@ -95,7 +95,9 @@ ul {
   width: 100%;
   padding: 0px;
 }
-
+#wikiLinks {
+  margin: 0px;
+}
 
 @media all and (max-width: 800px) {
   #li, h2, h3 {
