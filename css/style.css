@@ -95,8 +95,10 @@ ul {
   width: 100%;
   padding: 0px;
 }
+/*Styles the links so they fit in the infowindow */
 #wikiLinks {
   margin: 0px;
+  display: block;
 }
 
 @media all and (max-width: 800px) {

@@ -5,7 +5,7 @@ var places = [
 		lat: "32.7797583",
 		lng: "-96.7990691",
 		title: "Ivory Tower",
-		name: "Dallas"
+		name: "Telecommunications"
 	},
 	{
 		address : "8687 N Central Expressway, Suite 2340, NorthPark Center, Dallas, TX",
@@ -19,14 +19,14 @@ var places = [
 		lat: "32.675085",
 		lng: "-97.038484",
 		title: "Grand Prairie",
-		name: "Mobile Phone"
+		name: "Grand Prairie Texas"
 	},
 	{
 		address : "1971 U.S. 287 Frontage Rd Ste. 113, Mansfield, TX",
 		lat: "32.595490",
 		lng: "-97.147949",
 		title: "Mansfield",
-		name: "Cell phone"
+		name: "Mansfield Texas"
 	},
 	{
 		address : "13710 Dallas Pkwy, Dallas, TX",
@@ -68,18 +68,15 @@ var ViewModel = function() {
 
 	//Array of markers
 	self.allPlaces = [];
-		places.forEach(function(place) {
+	places.forEach(function(place) {
 	    self.allPlaces.push(place);
   	});
 
-	
-
 	//Array of ko.observable markers
 	self.locationList = ko.observableArray([]);
-
 	places.forEach(function(place) {
-			self.locationList.push(place);
-		});	
+		self.locationList.push(place);
+	});	
 
 	//FUNCTIONS: handleThis and markerClick; these functions were
 	//created outside the for loop to store the variables marker and infoWindow
@@ -128,18 +125,19 @@ var ViewModel = function() {
 		};
 		//Gets wikipedia articles
 		var wikiElem = [];
-		var wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='+place.name + '&format=json&callback=wikiCallback';
+
+		var wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search=' + place.name + '&format=json&callback=wikiCallback';
+		
 		$.ajax(wikiUrl, {
 			dataType: 'jsonp',
 			success: function( response ) {
 			   	var articleList = response[1];
-				   	for (var i = 0; i < 4; i++) {
+				   	for (var i = 0; i < articleList.length; i++) {
 	                articleStr = articleList[i];
 	                var url = 'http://en.wikipedia.org/wiki/' + articleStr;
 	                wikiElem.push('<li id="wikiLinks"><a href =' + url + '>' + articleStr + '</a></li>');
 	            };
-			   	//clearTimeout(wikiRequestTimeout);*/
-				
+
 				//The markers and infoWindows are created here
 				place.marker = new google.maps.Marker(markerOptions);
 				place.infoWindow = new google.maps.InfoWindow({
@@ -153,9 +151,23 @@ var ViewModel = function() {
 				//displays infowindow
 				google.maps.event.addListener(place.marker, 'click',
 					handleThis(place.marker, place.infoWindow));
+			},
+			error: function() {
+				wikiElem.push('<h3>failed to get wikipedia resources</h3>');
+				//The markers and infoWindows are created here
+				place.marker = new google.maps.Marker(markerOptions);
+				place.infoWindow = new google.maps.InfoWindow({
+					content: '<h1>'+place.title+'</h1>'+
+						place.address+ 
+						'<div>'+wikiElem+'</div>',
+					maxWidth: 300
+				});
+				//Listens for a click event and activates marker animation
+				//displays infowindow
+				google.maps.event.addListener(place.marker, 'click',
+					handleThis(place.marker, place.infoWindow));
 			}
-		});
-
+		}); 
 	});
 	
 	//THE LIST FILTER: 

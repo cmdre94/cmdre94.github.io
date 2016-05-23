@@ -5,7 +5,7 @@
    
     <title></title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <script src="library/jQuery.js"></script>
+    <script src="library/jquery-2.2.4.min.js"></script>
     
 
     <meta name="viewport" content="width=device-width" content="height=device-height">
@@ -13,13 +13,13 @@
   <body>
     <nav id="drawer" class="dark_gray">
       <header id="header">
-        <input id="new-search" placeholder="Search" data-bind="textInput: userInput, event: {keyup: filterMarkers}"/>
+        <input id="new-search" placeholder="Filter" data-bind="textInput: userInput, event: {keyup: filterMarkers}"/>
       </header>
       <ul data-bind="foreach: locationList">
         <li id="li" data-bind="text: title, click: markerClick"></li>
       </ul>
-      <!--<ul id="wikipedia-links"></ul>-->
     </nav>
+
     <div main>
       <div class="dark_gray">
         <h2>AT&T Stores</h2>
@@ -47,7 +47,7 @@
     </script>
     <script src="library/knockout-3.4.0.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places"async></script>
-     <script src="js/app.js"></script>
+    <script src="js/app.js"></script>
     <!--<script src="js/script.js"></script>-->
   </body>
 </html>
