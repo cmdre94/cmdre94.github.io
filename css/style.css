@@ -4,26 +4,32 @@ html, body {
   margin: 0;
   padding: 0;
 }
+
 h2 {
   text-align: center;
   background-color: darkgray;
   width: 100%;
   font-size: 30px;
 }
+
 h3 {
   text-align: center;
   max-width: 270px;
 }
+
 body {
   font-family: 'Roboto', sans-serif;
 }
+
 .title {
   font-size: 2.5em;
   text-align: center;
 }
+
 .box {
   min-height: 150px;
 }
+
 .dark_gray {
   background-color: darkgray;
   color: #efefef;
@@ -34,9 +40,11 @@ body {
   height: 100%;
   width: 100%;
 }
+
 a {
   width: 0%;
 }
+
 svg {
 width: 25%;
 max-width: 55px;
@@ -44,35 +52,43 @@ min-width: 55px;
 fill: #000;
 margin: 1%;
 }
+
 #map {
   display: block;
   width: 100%;
   height: 850px;
 }
+
 #drawer {
   display: inline;
   max-width: 241px;
   min-width: 154px;
 }
+
 li {
   margin: 2em;
   font-size: 20px;
 }
+
 h3:active, h3:hover, li:active, li:hover {
   background-color: #9c9a8b;
 }
+
 #new-search {
   margin: 2em 0 0 1em;
   width: 70%;
   font-size: 20px;
 }
+
 nav, main {
   box-sizing: border-box;
 }
+
 main {
   width: 100%;
   height: 100%;
 }
+
 /* By default, the drawer is hidden. */
 nav {
   display: flex-wrap;
@@ -86,15 +102,18 @@ nav {
   /* Optionally, we animate the drawer. */
   transition: transform 0.3s ease;
 }
+
 nav.open {
   -webkit-transform: translate(0, 0);
   transform: translate(0, 0);
   width:25%;
 }
+
 ul {
   width: 100%;
   padding: 0px;
 }
+
 /*Styles the links so they fit in the infowindow */
 #wikiLinks {
   margin: 0px;
@@ -105,18 +124,22 @@ ul {
   #li, h2, h3 {
     font-size: 135%;
   }
+
   #li {
     text-align: left;
     display: block;
   }
+
   #drawer {
     height: 600px;
     display: inline;
     width: 33%;
   }
+
   #new-search{
     font-size: 70%
   }
+  
   ul {
     margin-left:0px;
   }

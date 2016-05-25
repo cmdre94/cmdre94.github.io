@@ -51,6 +51,10 @@ var Location = function(data) {
 //Initialize and load the map; apply the Knockout.js bindings to the ViewModel
 var	map;
 
+var mapError = function() {
+	alert('Google Maps failed to load.');
+};
+
 	initMap = function() {
 		map = new google.maps.Map(document.querySelector('#map'), {
 			center: {lat: 32.820351, lng: -97.0122201},
@@ -88,7 +92,7 @@ var ViewModel = function() {
 			marker.setAnimation(google.maps.Animation.BOUNCE);
 			setTimeout(function(){marker.setAnimation(null); }, 1900);
 			setLocation(marker);
-		};
+		}
 
 		return function() {
 			
@@ -136,7 +140,7 @@ var ViewModel = function() {
 	                articleStr = articleList[i];
 	                var url = 'http://en.wikipedia.org/wiki/' + articleStr;
 	                wikiElem.push('<li id="wikiLinks"><a href =' + url + '>' + articleStr + '</a></li>');
-	            };
+	            }
 
 				//The markers and infoWindows are created here
 				place.marker = new google.maps.Marker(markerOptions);
@@ -152,6 +156,7 @@ var ViewModel = function() {
 				google.maps.event.addListener(place.marker, 'click',
 					handleThis(place.marker, place.infoWindow));
 			},
+			//Throws an error if the ajax requestfails
 			error: function() {
 				wikiElem.push('<h3>failed to get wikipedia resources</h3>');
 				//The markers and infoWindows are created here
