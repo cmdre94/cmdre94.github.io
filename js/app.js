@@ -63,7 +63,7 @@ var mapError = function() {
 		});
 		ko.applyBindings(ViewModel());
 	}; 
-window.addEventListener('load', initMap);
+//window.addEventListener('load', initMap);
 
 //THE VIEWMODEL
 var ViewModel = function() {
@@ -82,36 +82,40 @@ var ViewModel = function() {
 		self.locationList.push(place);
 	});	
 
-	//FUNCTIONS: handleThis and markerClick; these functions were
+
+
+	//FUNCTIONS: toggleBounce, handleThis, and markerClick; these functions were
 	//created outside the for loop to store the variables marker and infoWindow
 	//makes it possible to display and click the correct marker.  
 	//got this idea from the Udacity discussion board and expanded on it
-	var lastInfoWindow = null;
-	this.handleThis = function(marker, infoWindow) {
-		function toggleBounce() {
-			marker.setAnimation(google.maps.Animation.BOUNCE);
-			setTimeout(function(){marker.setAnimation(null); }, 1900);
-			setLocation(marker);
-		}
 
-		return function() {
-			
-			if (lastInfoWindow === infoWindow) {
-	          	toggleBounce(marker);
-	          	infoWindow.close(map, this);
-	          	lastInfoWindow = null;
-	          	
-	        }
-	        else {
-	            	if(lastInfoWindow !== null) {
-	                	lastInfoWindow.close(map, this);
-	                	toggleBounce(marker);
-	            	}
-	        	toggleBounce(marker);    	
-	            infoWindow.open(map, this);
-	            lastInfoWindow = infoWindow;
-	        }	
+	//This function animates the marker when it is clicked
+	var toggleBounce = function(marker) {
+			marker.setAnimation(google.maps.Animation.BOUNCE);
+			setTimeout(function(){marker.setAnimation(null); }, 1400);
+			setLocation(marker);
 		};
+
+	var lastInfoWindow = null;
+
+	this.handleThis = function(marker, infoWindow) {
+		return function() {
+			if (lastInfoWindow === infoWindow) {
+		          toggleBounce(marker);
+		          infoWindow.close(map, this);
+		          lastInfoWindow = null;
+		          	
+		       }
+			else {
+		            if(lastInfoWindow !== null) {
+		                lastInfoWindow.close(map, this);
+		                toggleBounce(marker);
+		            }
+		        	toggleBounce(marker);    	
+		           	infoWindow.open(map, this);
+		           	lastInfoWindow = infoWindow;
+		   	}
+	   	};	
 	};
 
 	//Makes it possible to click a list item which activates
@@ -127,52 +131,43 @@ var ViewModel = function() {
 			map: map,
 			position: latLng
 		};
+
+		var createMarkers = function(){
+		//The markers and infoWindows are created by this function
+			place.marker = new google.maps.Marker(markerOptions);
+			place.infoWindow = new google.maps.InfoWindow({
+				content: '<h1>'+place.title+'</h1>'+
+					place.address+ 
+					'<div>'+wikiElem+'</div>',
+				maxWidth: 200
+			});
+		//Listens for a click event and activates marker animation
+		//displays infowindow
+			google.maps.event.addListener(place.marker, 'click',
+				handleThis(place.marker, place.infoWindow));	
+		}
 		//Gets wikipedia articles
 		var wikiElem = [];
 
 		var wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search=' + place.name + '&format=json&callback=wikiCallback';
 		
 		$.ajax(wikiUrl, {
-			dataType: 'jsonp',
-			success: function( response ) {
+			dataType: 'jsonp'
+		}).done(function( response ) {
+				//successful ajax request
 			   	var articleList = response[1];
 				   	for (var i = 0; i < articleList.length; i++) {
 	                articleStr = articleList[i];
 	                var url = 'http://en.wikipedia.org/wiki/' + articleStr;
 	                wikiElem.push('<li id="wikiLinks"><a href =' + url + '>' + articleStr + '</a></li>');
 	            }
-
-				//The markers and infoWindows are created here
-				place.marker = new google.maps.Marker(markerOptions);
-				place.infoWindow = new google.maps.InfoWindow({
-					content: '<h1>'+place.title+'</h1>'+
-						place.address+ 
-						'<div>'+wikiElem+'</div>',
-					maxWidth: 300
+	            createMarkers();
+			}).fail(function() {
+					//failed ajax request
+					wikiElem.push('<h3>failed to get wikipedia resources</h3>');
+					createMarkers();
 				});
-
-				//Listens for a click event and activates marker animation
-				//displays infowindow
-				google.maps.event.addListener(place.marker, 'click',
-					handleThis(place.marker, place.infoWindow));
-			},
-			//Throws an error if the ajax requestfails
-			error: function() {
-				wikiElem.push('<h3>failed to get wikipedia resources</h3>');
-				//The markers and infoWindows are created here
-				place.marker = new google.maps.Marker(markerOptions);
-				place.infoWindow = new google.maps.InfoWindow({
-					content: '<h1>'+place.title+'</h1>'+
-						place.address+ 
-						'<div>'+wikiElem+'</div>',
-					maxWidth: 300
-				});
-				//Listens for a click event and activates marker animation
-				//displays infowindow
-				google.maps.event.addListener(place.marker, 'click',
-					handleThis(place.marker, place.infoWindow));
-			}
-		}); 
+		
 	});
 	
 	//THE LIST FILTER: 

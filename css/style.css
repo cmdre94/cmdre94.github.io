@@ -143,4 +143,8 @@ ul {
   ul {
     margin-left:0px;
   }
+
+  #wikiLinks {
+    font-size: 10px;
+  }
 }
