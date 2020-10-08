@@ -5,3 +5,7 @@ body {
 .navbar {
   margin-bottom: 20px;
 }
+
+.top-image {
+  max-width: 300px;
+}
