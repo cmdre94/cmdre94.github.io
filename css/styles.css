@@ -9,3 +9,16 @@ body {
 .top-image {
   max-width: 300px;
 }
+
+.card-size {
+  max-width: 400px;
+}
+
+.image-height {
+  height: 300px;
+}
+
+.project-iframe {
+  width: 100%;
+  height: 600px;
+}
